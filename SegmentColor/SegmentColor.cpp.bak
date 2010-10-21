@@ -127,10 +127,17 @@ int segmentColor(Image imageOrig, Image imageSeg, int x, int y)
 	redComponent = redComponent/totalCount;
 	greenComponent = greenComponent/totalCount;
 	blueComponent = blueComponent/totalCount;
-	memcpy((char *)&segColor, (char *)&redComponent, 2*sizeof(char));
-	memcpy((char *)&segColor + 2, (char *)&greenComponent, 1*sizeof(char));
-	memcpy((char *)&segColor + 3, (char *)&blueComponent, 1*sizeof(char));
-	cout << "Color: " << segColor << endl;
+	int *se = NULL;
+	double *a1 = &redComponent;
+	double *a2 = &greenComponent;
+	double *a3 = &blueComponent;
+	memcpy(&se, &a1,2);
+	memcpy(&se+2, &a2,1);
+	memcpy(&se+3, &a3,1);
+	//memcpy(&segColor, &redComponent, 2);
+	//memcpy(&segColor + 2, &greenComponent, 1);
+	//memcpy(&segColor+3, &blueComponent, 1);
+	cout << "Color: " << se << endl;
 	return segColor;
 }
 int main(int argc,char *argv[])
