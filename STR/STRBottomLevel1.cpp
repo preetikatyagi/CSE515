@@ -46,12 +46,13 @@ bool compare_nocase2 (string first, string second)
   buffer1 >> temp1;
 
   int pos21 = second.find_first_of(",");
-  pos21 = first.find_first_of(",",pos21+1);
+  pos21 = second.find_first_of(",",pos21+1);
   int pos22 = second.find_first_of(",",pos21+1);
   string sub2 = second.substr(pos21+1, pos22-pos21-1);
   istringstream buffer2(sub2);
   buffer2 >> temp2;
-
+  //cout << sub1 << " " << pos11 << " " << pos12 << " " << sub2 << " " << pos21 << " " << pos22 << endl;
+  //cout << first << " " << second << endl;
   if(temp1 < temp2) return true;
   else return false;
 	
@@ -71,8 +72,8 @@ bool compare_nocase3 (string first, string second)
   buffer1 >> temp1;
 
   int pos21 = second.find_first_of(",");
-  pos21 = first.find_first_of(",",pos21+1);
-  pos21 = first.find_first_of(",",pos21+1);
+  pos21 = second.find_first_of(",",pos21+1);
+  pos21 = second.find_first_of(",",pos21+1);
   int pos22 = second.find_first_of(",",pos21+1);
   string sub2 = second.substr(pos21+1, pos22-pos21-1);
   istringstream buffer2(sub2);
@@ -98,9 +99,9 @@ bool compare_nocase4 (string first, string second)
   buffer1 >> temp1;
 
   int pos21 = second.find_first_of(",");
-  pos21 = first.find_first_of(",",pos21+1);
-  pos21 = first.find_first_of(",",pos21+1);
-  pos21 = first.find_first_of(",",pos21+1);
+  pos21 = second.find_first_of(",",pos21+1);
+  pos21 = second.find_first_of(",",pos21+1);
+  pos21 = second.find_first_of(",",pos21+1);
   int pos22 = second.find_first_of(",",pos21+1);
   string sub2 = second.substr(pos21+1, pos22-pos21-1);
   istringstream buffer2(sub2);
@@ -125,10 +126,10 @@ bool compare_nocase5 (string first, string second)
   buffer1 >> temp1;
 
   int pos21 = second.find_first_of(",");
-  pos21 = first.find_first_of(",",pos21+1);
-  pos21 = first.find_first_of(",",pos21+1);
-  pos21 = first.find_first_of(",",pos21+1);
-  pos21 = first.find_first_of(",",pos21+1);
+  pos21 = second.find_first_of(",",pos21+1);
+  pos21 = second.find_first_of(",",pos21+1);
+  pos21 = second.find_first_of(",",pos21+1);
+  pos21 = second.find_first_of(",",pos21+1);
   string sub2 = second.substr(pos21+1, second.length()-1);
   istringstream buffer2(sub2);
   buffer2 >> temp2;
@@ -196,7 +197,7 @@ int main ()
 	int numObjPPage = 2;
 	int numDimension = 2;
 	int numObjPSlice;
-	for(int counter = 1; counter < 6; counter++)
+	for(int counter = 1; counter <= 5; counter++)
 	{
 		cout << "Counter: " << counter << endl;
 		while(!fNamePrev.empty())
@@ -204,8 +205,10 @@ int main ()
 			string tempFName = fNamePrev.front();
 			mylist = sortObjects(tempFName, counter);
 			//cout << "mylist contains:" << endl;
+			if(counter == 2){
 			for (it=mylist.begin(); it!=mylist.end(); it++)
-				//cout << "SORTED: " << *it << endl;
+				cout << "SORTED: " << *it << endl;
+			}
 			numObjects = mylist.size();
 			numSlice = (double)numObjects/numObjPPage;
 			//cout << "No Slice1: " << numSlice << endl;
