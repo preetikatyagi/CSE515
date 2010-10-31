@@ -194,8 +194,8 @@ int main ()
 	double numSlice;
 	int noSlice;
 	int numObjects;
-	int numObjPPage = 2;
-	int numDimension = 2;
+	int numObjPPage = 5;
+	int numDimension = 5;
 	int numObjPSlice;
 	for(int counter = 1; counter <= 5; counter++)
 	{
@@ -205,10 +205,11 @@ int main ()
 			string tempFName = fNamePrev.front();
 			mylist = sortObjects(tempFName, counter);
 			//cout << "mylist contains:" << endl;
-			if(counter == 2){
+			//if(counter == 2){
+			cout << "########################" << endl;
 			for (it=mylist.begin(); it!=mylist.end(); it++)
-				cout << "SORTED: " << *it << endl;
-			}
+			//	cout << "SORTED: " << *it << endl;
+			//}
 			numObjects = mylist.size();
 			numSlice = (double)numObjects/numObjPPage;
 			//cout << "No Slice1: " << numSlice << endl;
@@ -221,18 +222,18 @@ int main ()
 			cout << "Number of slices: " << numSlice << endl;
 			numObjPSlice = numObjects/noSlice;
 			double numObjPSlice1 = (double)numObjects/noSlice;
-			cout << "ACTUAL: " << numObjPSlice1 << endl;
+			//cout << "ACTUAL: " << numObjPSlice1 << endl;
 			if(numObjPSlice1 > numObjPSlice)
 			{
 				numObjPSlice++;
 			}
-			cout << "Number of objects per slice: " << numObjPSlice << endl;
+			//cout << "Number of objects per slice: " << numObjPSlice << endl;
 			string fileN;
 			for (it=mylist.begin(); it!=mylist.end();)
 			{
 			for(int innerCounter = 1; innerCounter <= noSlice; innerCounter++)
 			{
-				cout << "writing to slice " << innerCounter << endl;
+				//cout << "writing to slice " << innerCounter << endl;
 				ostringstream buffer;
 				buffer << innerCounter;
 				string tempFName1 = tempFName;
@@ -250,7 +251,7 @@ int main ()
 					while(j < numObjPSlice && it!=mylist.end())
 					{
 						sliceFile << *it << endl;
-						cout << innerCounter << " " << *it << endl;
+						//cout << innerCounter << " " << *it << endl;
 						++it;
 						j++;
 					}
@@ -270,10 +271,10 @@ int main ()
 			fName.pop_front();
 		}
 	}
-	for (it=fNamePrev.begin(); it!=fNamePrev.end();++it)	
-	{
-		cout << *it << endl;
-	}
-	cout << endl;
+	//for (it=fNamePrev.begin(); it!=fNamePrev.end();++it)	
+	//{
+	//	cout << *it << endl;
+	//}
+	//cout << endl;
 	return 0;
 }
