@@ -302,24 +302,24 @@ int main ()
 	cout << "Number of objects: " << finalListObjects.size() << endl;
 	int count = 0;
 	string temp;
+	temp = "C:\\Preetika\\MWD\\ProjectCode\\STR\\";
+	temp = temp.append("STRLeaf.txt");
+	ofstream ffile((char *)temp.c_str());
 	int fileC = 1;
+	int seekPointer = 0;
 	for (it=finalListObjects.begin(); it!=finalListObjects.end();)	
 	{
 		count = 1;
-		temp = "C:\\Preetika\\MWD\\ProjectCode\\STR\\";
-		ostringstream t;
-		t << fileC;
-		temp = temp.append(t.str());
-		temp = temp.append(".txt");
-		ofstream ffile((char *)temp.c_str());
 		if(ffile.is_open())
 		{
+			ffile.seekp(seekPointer);
 			while(count <= numObjPPage && it!=finalListObjects.end())
 			{
 				ffile << *it << endl;
 				++it;
 				count++;
 			}
+			seekPointer = seekPointer + 4096;
 		}
 		else
 		{
