@@ -206,7 +206,7 @@ int main ()
 			mylist = sortObjects(tempFName, counter);
 			//cout << "mylist contains:" << endl;
 			//if(counter == 2){
-			cout << "########################" << endl;
+			//cout << "########################" << endl;
 			for (it=mylist.begin(); it!=mylist.end(); it++)
 			//	cout << "SORTED: " << *it << endl;
 			//}
@@ -219,7 +219,7 @@ int main ()
 			{
 				noSlice++;
 			}
-			cout << "Number of slices: " << numSlice << endl;
+			//cout << "Number of slices: " << numSlice << endl;
 			numObjPSlice = numObjects/noSlice;
 			double numObjPSlice1 = (double)numObjects/noSlice;
 			//cout << "ACTUAL: " << numObjPSlice1 << endl;
@@ -239,7 +239,7 @@ int main ()
 				string tempFName1 = tempFName;
 				fileN = "";
 				fileN = tempFName1.append(buffer.str());
-				cout << "File Name: " << fileN << endl;
+				//cout << "File Name: " << fileN << endl;
 				fName.push_back(fileN.c_str());
 				string temp = "C:\\Preetika\\MWD\\ProjectCode\\STR\\";
 				fileN = temp.append(fileN);
@@ -271,10 +271,61 @@ int main ()
 			fName.pop_front();
 		}
 	}
-	//for (it=fNamePrev.begin(); it!=fNamePrev.end();++it)	
-	//{
-	//	cout << *it << endl;
-	//}
-	//cout << endl;
+	fNamePrev.sort();
+	list<string> finalListObjects;
+	string line;
+	for (it=fNamePrev.begin(); it!=fNamePrev.end();++it)	
+	{
+		//cout << *it << endl;
+		string tempFName = "C:\\Preetika\\MWD\\ProjectCode\\STR\\";
+		tempFName = tempFName.append(*it);
+		tempFName = tempFName.append(".txt");
+		ifstream file((char *)tempFName.c_str());
+		if(file.is_open())
+		{
+			while(file.good())
+			{
+				getline(file, line);
+				if(line != "")
+				{
+					finalListObjects.push_back(line);
+				}
+			}
+			file.close();
+			remove((char *)tempFName.c_str());
+		}
+		else 
+		{
+			cout << "Unable to open file. " << tempFName << endl;
+		}		
+	}
+	cout << "Number of objects: " << finalListObjects.size() << endl;
+	int count = 0;
+	string temp;
+	int fileC = 1;
+	for (it=finalListObjects.begin(); it!=finalListObjects.end();)	
+	{
+		count = 1;
+		temp = "C:\\Preetika\\MWD\\ProjectCode\\STR\\";
+		ostringstream t;
+		t << fileC;
+		temp = temp.append(t.str());
+		temp = temp.append(".txt");
+		ofstream ffile((char *)temp.c_str());
+		if(ffile.is_open())
+		{
+			while(count <= numObjPPage && it!=finalListObjects.end())
+			{
+				ffile << *it << endl;
+				++it;
+				count++;
+			}
+		}
+		else
+		{
+			ffile.close();
+		}
+		fileC++;
+	}
 	return 0;
 }
