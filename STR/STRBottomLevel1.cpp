@@ -12,6 +12,7 @@ using namespace std;
 // Global Variables
 #define NUMDESC 5
 int indexDesc = 0;
+int minmax = 0;
 int numDesc = 5;
 // comparison, not case sensitive.
 bool compare_nocase1 (string first, string second)
@@ -20,6 +21,18 @@ bool compare_nocase1 (string first, string second)
 	int temp1=0, temp2=0;
 	int position1 = 0;
 	
+	if(localIndex == 0)
+	{
+		string substr01 = first.substr(0,first.find_first_of(","));
+		string substr02 = second.substr(0,second.find_first_of(","));
+		istringstream buffer1(substr01);
+		buffer1 >> temp1;
+		istringstream buffer2(substr02);
+		buffer2 >> temp2;
+	}
+	else
+	{
+	position1 = 0;
 	for(int inner = 0; inner < localIndex; inner++)
 	{
 		position1 = first.find_first_of(",", position1+1);
@@ -40,7 +53,57 @@ bool compare_nocase1 (string first, string second)
 	sub1 = second.substr(position1+1, position2-position1-1);
 	istringstream buffer2(sub1);
 	buffer2 >> temp2;
-	
+	}
+	if(temp1 < temp2) return true;
+	else return false;		
+}
+bool compare_nocase2 (string first, string second)
+{
+	int localIndex = minmax + indexDesc;
+	int temp1=0, temp2=0;
+	int position1 = 0;
+	cout << indexDesc << " " << minmax << endl;
+	if(localIndex == 0)
+	{
+		position1 = first.find_first_of(",");
+		string substr01 = first.substr(0,position1);
+		position1 = second.find_first_of(",");
+		string substr02 = second.substr(0,position1);
+		istringstream buffer1(substr01);
+		buffer1 >> temp1;
+		istringstream buffer2(substr02);
+		buffer2 >> temp2;
+	}
+	else
+	{
+		cout << "EXPECTED: " << endl;
+	position1 = 0;
+	for(int inner = 0; inner < localIndex; inner++)
+	{
+		position1 = first.find_first_of(",", position1+1);
+	}
+	int position2 = 0;
+	position2 = first.find_first_of(",",position1+1);
+	string sub1 = first.substr(position1+1, position2-position1-1);
+	istringstream buffer1(sub1);
+	buffer1 >> temp1;
+  
+	position1 = 0;
+	for(int inner = 0; inner < localIndex; inner++)
+	{
+		position1 = second.find_first_of(",",position1+1);
+	}
+	position2 = 0;
+	position2 = second.find_first_of(",",position1+1);
+	sub1 = second.substr(position1+1, position2-position1-1);
+	istringstream buffer2(sub1);
+	buffer2 >> temp2;
+	}
+	if(localIndex != 0)
+	{
+	cout << "FIRST: " << first << " " << temp1 << endl;
+	cout << "SECOND: " << second << " " << temp2 << endl;
+	}
 	if(temp1 < temp2) return true;
 	else return false;		
 }
@@ -314,11 +377,9 @@ int main ()
 		}
 		else
 		{
-			//cout << "JUMP------" << count1 << endl;
 			setSeekPointer = setSeekPointer + diskSize;
 			blockCounter++;	
 		}
-		//cout << "BLOCK COUNTER 1: " << blockCounter << endl;
 	count1 = 0;
 	leafObjects.close();
 	internalNode1.close();
@@ -341,6 +402,7 @@ int main ()
 			for (int global = 0; global < numberOfBlock; global++)
 			{
 				list<string> slist1;
+				list<string> slist2;
 				internalNode.seekg(getSeekPointer1);
 				for(int a1 = 0; a1 < perBlock; a1++)
 				{
@@ -352,120 +414,72 @@ int main ()
 					if(line != "")
 					{
 						slist1.push_back(line);
+						slist2.push_back(line);
 					}
 				}
-				// create MBR Entry
-				list<int> list1;
-				list<int> list2;
-				list<int> list3;
-				list<int> list4;
-				list<int> list5;
-				int tempNum;
-				for (it=slist1.begin(); it!=slist1.end();++it)	
-				{
-					string t1 = *it;
-					int pos11 = t1.find_first_of(",");
-					istringstream tempStr1(t1.substr(0,pos11));
-					tempStr1 >> tempNum;
-					list1.push_back(tempNum);
-
-					int pos12 = t1.find_first_of(",", pos11+1);
-					istringstream tempStr2(t1.substr(pos11+1, pos12-pos11-1));
-					tempStr2 >> tempNum;
-					list2.push_back(tempNum);
-
-					int pos13 = t1.find_first_of(",", pos12+1);
-					istringstream tempStr3(t1.substr(pos12+1, pos13-pos12-1));
-					tempStr3 >> tempNum;
-					list3.push_back(tempNum);
-
-					int pos14 = t1.find_first_of(",", pos13+1);
-					istringstream tempStr4(t1.substr(pos13+1, pos14-pos13-1));
-					tempStr4 >> tempNum;
-					list4.push_back(tempNum);
-
-					int pos15 = t1.find_first_of(",", pos14+1);
-					istringstream tempStr5(t1.substr(pos14+1, pos15-pos14-1));
-					tempStr5 >> tempNum;
-					list4.push_back(tempNum);
-
-					int pos16 = t1.find_first_of(",", pos15+1);
-					istringstream tempStr6(t1.substr(pos15+1, pos16-pos15-1));
-					tempStr6 >> tempNum;
-					list1.push_back(tempNum);
-
-					int pos17 = t1.find_first_of(",", pos16+1);
-					istringstream tempStr7(t1.substr(pos16+1, pos17-pos16-1));
-					tempStr7 >> tempNum;
-					list2.push_back(tempNum);
-
-					int pos18 = t1.find_first_of(",", pos17+1);
-					istringstream tempStr8(t1.substr(pos17+1, pos18-pos17-1));
-					tempStr8 >> tempNum;
-					list3.push_back(tempNum);
-
-					int pos19 = t1.find_first_of(",", pos18+1);
-					istringstream tempStr9(t1.substr(pos18+1, pos19-pos18-1));
-					tempStr9 >> tempNum;
-					list4.push_back(tempNum);
-
-					int pos110 = t1.find_first_of(",", pos19+1);
-					istringstream tempStr10(t1.substr(pos19+1, pos110-pos19-1));
-					tempStr10 >> tempNum;
-					list5.push_back(tempNum);
-				}
+				// Write code for MBR
 				string internalData1 = "";
 				string internalData2 = "";
-				list1.sort();
-				list2.sort();
-				list3.sort();
-				list4.sort();
-				list5.sort();
-				if(!list1.empty())
+				//int indexDesc = 0;
+				//int minmax = 0;
+				for(int inn = 0; inn < numDesc; inn++)
 				{
-					ostringstream buffer1;
-					buffer1 << list1.front();
-					internalData1 += buffer1.str() + ",";
-					ostringstream buffer2;
-					buffer2 << list1.back();
-					internalData2 += buffer2.str() + ",";
-				}
-				if(!list2.empty())
+				indexDesc = inn;
+				minmax = 0;
+				slist1.sort(compare_nocase2);
+				int localIndex = indexDesc + minmax;
+				int position1 = 0;
+				int position2 = 0;
+				string sub1 = "";
+				string sub2 = "";
+				if(localIndex == 0)
 				{
-					ostringstream buffer1;
-					buffer1 << list2.front();
-					internalData1 += buffer1.str() + ",";
-					ostringstream buffer2;
-					buffer2 << list2.back();
-					internalData2 += buffer2.str() + ",";
+					position1 = slist1.front().find_first_of(",");
+					sub1 = slist1.front().substr(0,position1-1);
 				}
-				if(!list3.empty())
+				else
 				{
-					ostringstream buffer1;
-					buffer1 << list3.front();
-					internalData1 += buffer1.str() + ",";
-					ostringstream buffer2;
-					buffer2 << list3.back();
-					internalData2 += buffer2.str() + ",";
-				}
-				if(!list4.empty())
+					position1 = 0;
+					for(int inner = 0; inner < localIndex; inner++)
+					{
+						position1 = slist1.front().find_first_of(",", position1+1);
+					}
+					position2 = 0;
+					position2 = slist1.front().find_first_of(",",position1+1);
+					sub1 = slist1.front().substr(position1+1, position2-position1-1);
+  				}
+				internalData1 += sub1 + ",";
+				
+				
+				indexDesc = inn;
+				minmax = numDesc;
+				slist2.sort(compare_nocase2);
+				localIndex = indexDesc + minmax;
+				position1 = 0;
+				position2 = 0;
+				sub1 = "";
+				sub2 = "";
+				if(localIndex == 0)
 				{
-					ostringstream buffer1;
-					buffer1 << list4.front();
-					internalData1 += buffer1.str() + ",";
-					ostringstream buffer2;
-					buffer2 << list4.back();
-					internalData2 += buffer2.str() + ",";
+					position2 = slist1.front().find_first_of(",");
+					sub2 = slist2.back().substr(0,position1-1);
 				}
-				if(!list5.empty())
+				else
 				{
-					ostringstream buffer1;
-					buffer1 << list5.front();
-					internalData1 += buffer1.str() + ",";
-					ostringstream buffer2;
-					buffer2 << list5.back();
-					internalData2 += buffer2.str() + ",";
+					position1 = 0;
+					for(int inner = 0; inner < localIndex; inner++)
+					{
+						position1 = slist2.back().find_first_of(",",position1+1);
+					}
+					position2 = 0;
+					position2 = slist2.back().find_first_of(",",position1+1);
+					sub2 = slist2.back().substr(position1+1, position2-position1-1);
 				}
+				internalData2 += sub2 + ",";
+				}
+				// Write code for MBR
+				// create MBR Entry
+				
 				count1++;
 				string fInternalData = internalData1 + internalData2;
 				if(count1 == 1)
@@ -518,11 +532,11 @@ int main ()
 		internalNode.seekg(9216);
 		string l1 ="";
 		getline(internalNode, l1);
-		//cout << l1 << endl;
+		cout << l1 << endl;
 		getline(internalNode, l1);
-		//cout << l1 << endl;
+		cout << l1 << endl;
 		getline(internalNode, l1);
-		//cout << l1 << endl;
+		cout << l1 << endl;
 				getline(internalNode, l1);
 		//cout << l1 << endl;
 				getline(internalNode, l1);
