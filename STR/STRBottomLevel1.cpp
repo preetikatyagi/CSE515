@@ -9,134 +9,41 @@
 #include <math.h>
 using namespace std;
 
+// Global Variables
+#define NUMDESC 5
+int indexDesc = 0;
+int numDesc = 5;
 // comparison, not case sensitive.
 bool compare_nocase1 (string first, string second)
 {
-  unsigned int i=0;
-  char tempint = 0;
-  
-  int temp1=0, temp2=0;
-  int pos11 = first.find_first_of(",");
-  int pos12 = first.find_first_of(",",pos11+1);
-  string sub1 = first.substr(pos11+1, pos12-pos11-1);
-  istringstream buffer1(sub1);
-  buffer1 >> temp1;
-
-  int pos21 = second.find_first_of(",");
-  int pos22 = second.find_first_of(",",pos21+1);
-  string sub2 = second.substr(pos21+1, pos22-pos21-1);
-  istringstream buffer2(sub2);
-  buffer2 >> temp2;
-
-  if(temp1 < temp2) return true;
-  else return false;
+	int localIndex = indexDesc;
+	int temp1=0, temp2=0;
+	int position1 = 0;
 	
-}
-bool compare_nocase2 (string first, string second)
-{
-  unsigned int i=0;
-  char tempint = 0;
+	for(int inner = 0; inner < localIndex; inner++)
+	{
+		position1 = first.find_first_of(",", position1+1);
+	}
+	int position2 = 0;
+	position2 = first.find_first_of(",",position1+1);
+	string sub1 = first.substr(position1+1, position2-position1-1);
+	istringstream buffer1(sub1);
+	buffer1 >> temp1;
   
-  int temp1=0, temp2=0;
-  int pos11 = first.find_first_of(",");
-  pos11 = first.find_first_of(",",pos11+1);
-  int pos12 = first.find_first_of(",",pos11+1);
-  string sub1 = first.substr(pos11+1, pos12-pos11-1);
-  istringstream buffer1(sub1);
-  buffer1 >> temp1;
-
-  int pos21 = second.find_first_of(",");
-  pos21 = second.find_first_of(",",pos21+1);
-  int pos22 = second.find_first_of(",",pos21+1);
-  string sub2 = second.substr(pos21+1, pos22-pos21-1);
-  istringstream buffer2(sub2);
-  buffer2 >> temp2;
-  //cout << sub1 << " " << pos11 << " " << pos12 << " " << sub2 << " " << pos21 << " " << pos22 << endl;
-  //cout << first << " " << second << endl;
-  if(temp1 < temp2) return true;
-  else return false;
+	position1 = 0;
+	for(int inner = 0; inner < localIndex; inner++)
+	{
+		position1 = second.find_first_of(",",position1+1);
+	}
+	position2 = 0;
+	position2 = second.find_first_of(",",position1+1);
+	sub1 = second.substr(position1+1, position2-position1-1);
+	istringstream buffer2(sub1);
+	buffer2 >> temp2;
 	
+	if(temp1 < temp2) return true;
+	else return false;		
 }
-bool compare_nocase3 (string first, string second)
-{
-  unsigned int i=0;
-  char tempint = 0;
-  
-  int temp1=0, temp2=0;
-  int pos11 = first.find_first_of(",");
-  pos11 = first.find_first_of(",",pos11+1);
-  pos11 = first.find_first_of(",",pos11+1);
-  int pos12 = first.find_first_of(",",pos11+1);
-  string sub1 = first.substr(pos11+1, pos12-pos11-1);
-  istringstream buffer1(sub1);
-  buffer1 >> temp1;
-
-  int pos21 = second.find_first_of(",");
-  pos21 = second.find_first_of(",",pos21+1);
-  pos21 = second.find_first_of(",",pos21+1);
-  int pos22 = second.find_first_of(",",pos21+1);
-  string sub2 = second.substr(pos21+1, pos22-pos21-1);
-  istringstream buffer2(sub2);
-  buffer2 >> temp2;
-
-  if(temp1 < temp2) return true;
-  else return false;
-	
-}
-bool compare_nocase4 (string first, string second)
-{
-  unsigned int i=0;
-  char tempint = 0;
-  
-  int temp1=0, temp2=0;
-  int pos11 = first.find_first_of(",");
-  pos11 = first.find_first_of(",",pos11+1);
-  pos11 = first.find_first_of(",",pos11+1);
-  pos11 = first.find_first_of(",",pos11+1);
-  int pos12 = first.find_first_of(",",pos11+1);
-  string sub1 = first.substr(pos11+1, pos12-pos11-1);
-  istringstream buffer1(sub1);
-  buffer1 >> temp1;
-
-  int pos21 = second.find_first_of(",");
-  pos21 = second.find_first_of(",",pos21+1);
-  pos21 = second.find_first_of(",",pos21+1);
-  pos21 = second.find_first_of(",",pos21+1);
-  int pos22 = second.find_first_of(",",pos21+1);
-  string sub2 = second.substr(pos21+1, pos22-pos21-1);
-  istringstream buffer2(sub2);
-  buffer2 >> temp2;
-
-  if(temp1 < temp2) return true;
-  else return false;
-	
-}
-bool compare_nocase5 (string first, string second)
-{
-  unsigned int i=0;
-  char tempint = 0;
-  int temp1=0, temp2=0;
-  int pos11 = first.find_first_of(",");
-  pos11 = first.find_first_of(",",pos11+1);
-  pos11 = first.find_first_of(",",pos11+1);
-  pos11 = first.find_first_of(",",pos11+1);
-  pos11 = first.find_first_of(",",pos11+1);
-  string sub1 = first.substr(pos11+1, first.length()-1);
-  istringstream buffer1(sub1);
-  buffer1 >> temp1;
-
-  int pos21 = second.find_first_of(",");
-  pos21 = second.find_first_of(",",pos21+1);
-  pos21 = second.find_first_of(",",pos21+1);
-  pos21 = second.find_first_of(",",pos21+1);
-  pos21 = second.find_first_of(",",pos21+1);
-  string sub2 = second.substr(pos21+1, second.length()-1);
-  istringstream buffer2(sub2);
-  buffer2 >> temp2;
-  if(temp1 < temp2) return true;
-  else return false;
-}
-
 list<string> sortObjects(string fileName, int check)
 {
 	list<string> mylist;
@@ -162,26 +69,9 @@ list<string> sortObjects(string fileName, int check)
 	{
 		cout << "Unable to open file. " << fileName << endl;
 	}
-	if(check == 1)
-	{
-		mylist.sort(compare_nocase1);
-	}
-	else if(check == 2)
-	{
-		mylist.sort(compare_nocase2);
-	}
-	else if(check == 3)
-	{
-		mylist.sort(compare_nocase3);
-	}
-	else if(check == 4)
-	{
-		mylist.sort(compare_nocase4);
-	}
-	else if(check == 5)
-	{
-		mylist.sort(compare_nocase5);
-	}
+	indexDesc = check;
+	mylist.sort(compare_nocase1);
+	indexDesc = 0;
 	return mylist;
 }
 int main ()
@@ -193,14 +83,14 @@ int main ()
 	fNamePrev.push_back("1");
 	double numSlice;
 	int noSlice;
-	int numObjects;
+	int numObjects = 0;
 	int diskSize = 1024;
 	int numObjPPage = 5;
-	int numDimension = 5;
+	int numDimension = numDesc;
 	int numObjPSlice;
-	for(int counter = 1; counter <= 5; counter++)
+	for(int counter = 1; counter <= numDesc; counter++)
 	{
-		cout << "Counter: " << counter << endl;
+		//cout << "Counter: " << counter << endl;
 		while(!fNamePrev.empty())
 		{
 			string tempFName = fNamePrev.front();
@@ -287,7 +177,7 @@ int main ()
 			cout << "Unable to open file. " << tempFName << endl;
 		}		
 	}
-	cout << "Number of objects: " << finalListObjects.size() << endl;
+	//cout << "Number of objects: " << finalListObjects.size() << endl;
 	int count = 0;
 	string temp;
 	temp = "C:\\Preetika\\MWD\\ProjectCode\\STR\\";
@@ -322,7 +212,7 @@ int main ()
 	int getSeekPointer = 0;
 	int setSeekPointer = 0;
 	int setSeekPointerLocal = 0;
-	int noOfInternalNodePPage = 4;
+	int noOfInternalNodePPage = 3;
 	int localSetSeekPointer2 = 0;
 	string secondToLeaf;
 	string internalData = "";
@@ -346,93 +236,41 @@ int main ()
 					sList.push_back(line);
 				}
 			}
-			
-			sList.sort(compare_nocase1);
-			if(!sList.empty())
+			// Write loop
+			int position1 = 0;
+			int position2 = 0;
+			for(int inner = 1; inner <= numDimension; inner++)
 			{
-				int pos11 = sList.front().find_first_of(",");
-				int pos12 = sList.front().find_first_of(",",pos11+1);
-				string sub1 = sList.front().substr(pos11+1, pos12-pos11-1);
-				internalData += sub1 + ",";
-			
-				pos11 = sList.back().find_first_of(",");
-				pos12 = sList.back().find_first_of(",",pos11+1);
-				sub1 = sList.back().substr(pos11+1, pos12-pos11-1);
-				internalData += sub1 + ",";
+				indexDesc = inner;
+				sList.sort(compare_nocase1);
+				position1 = 0;
+				if(!sList.empty())
+				{
+					for(int inner1 = 0; inner1 < indexDesc; inner1++)
+					{
+						position1 = sList.front().find_first_of(",", position1+1);
+					}
+					position2 = 0;
+					position2 = sList.front().find_first_of(",",position1+1);
+					string sub1 = sList.front().substr(position1+1, position2-position1-1);
+					internalData += sub1 + ",";
+				}
+				position1 = 0;
+				if(!sList.empty())
+				{
+					for(int inner1 = 0; inner1 < indexDesc; inner1++)
+					{
+						position1 = sList.back().find_first_of(",", position1+1);
+					}
+					position2 = 0;
+					position2 = sList.back().find_first_of(",",position1+1);
+					string sub1 = sList.back().substr(position1+1, position2-position1-1);
+					internalData += sub1 + ",";
+				}
 			}
-			sList.sort(compare_nocase2);
-			if(!sList.empty())
-			{
-				int pos11 = sList.front().find_first_of(",");
-				pos11 = sList.front().find_first_of(",", pos11+1);
-				int pos12 = sList.front().find_first_of(",",pos11+1);
-				string sub1 = sList.front().substr(pos11+1, pos12-pos11-1);
-				internalData += sub1 + ",";
+			indexDesc = 0;
+			// Write loop
 			
-				pos11 = sList.back().find_first_of(",");
-				pos11 = sList.back().find_first_of(",", pos11+1);
-				pos12 = sList.back().find_first_of(",",pos11+1);
-				sub1 = sList.back().substr(pos11+1, pos12-pos11-1);
-				internalData += sub1 + ",";
-			}
-
-			sList.sort(compare_nocase3);
-			if(!sList.empty())
-			{
-				int pos11 = sList.front().find_first_of(",");
-				pos11 = sList.front().find_first_of(",", pos11+1);
-				pos11 = sList.front().find_first_of(",", pos11+1);
-				int pos12 = sList.front().find_first_of(",",pos11+1);
-				string sub1 = sList.front().substr(pos11+1, pos12-pos11-1);
-				internalData += sub1 + ",";
-			
-				pos11 = sList.back().find_first_of(",");
-				pos11 = sList.back().find_first_of(",", pos11+1);
-				pos11 = sList.back().find_first_of(",", pos11+1);
-				pos12 = sList.back().find_first_of(",",pos11+1);
-				sub1 = sList.back().substr(pos11+1, pos12-pos11-1);
-				internalData += sub1 + ",";
-			}
-			sList.sort(compare_nocase4);
-			if(!sList.empty())
-			{
-				int pos11 = sList.front().find_first_of(",");
-				pos11 = sList.front().find_first_of(",", pos11+1);
-				pos11 = sList.front().find_first_of(",", pos11+1);
-				pos11 = sList.front().find_first_of(",", pos11+1);
-				int pos12 = sList.front().find_first_of(",",pos11+1);
-				string sub1 = sList.front().substr(pos11+1, pos12-pos11-1);
-				internalData += sub1 + ",";
-			
-				pos11 = sList.back().find_first_of(",");
-				pos11 = sList.back().find_first_of(",", pos11+1);
-				pos11 = sList.back().find_first_of(",", pos11+1);
-				pos11 = sList.back().find_first_of(",", pos11+1);
-				pos12 = sList.back().find_first_of(",",pos11+1);
-				sub1 = sList.back().substr(pos11+1, pos12-pos11-1);
-				internalData += sub1 + ",";
-			}
-			sList.sort(compare_nocase5);
-			if(!sList.empty())
-			{
-				int pos11 = sList.front().find_first_of(",");
-				pos11 = sList.front().find_first_of(",", pos11+1);
-				pos11 = sList.front().find_first_of(",", pos11+1);
-				pos11 = sList.front().find_first_of(",", pos11+1);
-				pos11 = sList.front().find_first_of(",", pos11+1);
-				int pos12 = sList.front().find_first_of(",",pos11+1);
-				string sub1 = sList.front().substr(pos11+1, sList.front().length()-1);
-				internalData += sub1 + ",";
-			
-				pos11 = sList.back().find_first_of(",");
-				pos11 = sList.back().find_first_of(",", pos11+1);
-				pos11 = sList.back().find_first_of(",", pos11+1);
-				pos11 = sList.back().find_first_of(",", pos11+1);
-				pos11 = sList.back().find_first_of(",", pos11+1);
-				pos12 = sList.back().find_first_of(",",pos11+1);
-				sub1 = sList.back().substr(pos11+1, sList.back().length()-1);
-				internalData += sub1 + ",";
-			}
 			count1++;
 			if(internalData != "")
 			{
@@ -463,7 +301,7 @@ int main ()
 			}
 			getSeekPointer = getSeekPointer + diskSize;
 			
-			if(count1 == 4)
+			if(count1 == 3)
 			{
 				count1 = 0;
 				blockCounter++;
@@ -480,7 +318,7 @@ int main ()
 			setSeekPointer = setSeekPointer + diskSize;
 			blockCounter++;	
 		}
-		cout << "BLOCK COUNTER 1: " << blockCounter << endl;
+		//cout << "BLOCK COUNTER 1: " << blockCounter << endl;
 	count1 = 0;
 	leafObjects.close();
 	internalNode1.close();
@@ -489,7 +327,7 @@ int main ()
 	int getSeekPointer1 = 0;
 	int setSeekPointer1 = setSeekPointer;
 	int endPointer = 0;
-	int perBlock = 4;
+	int perBlock = 3;
 	int numberOfBlock = blockCounter;
 	
 	blockCounter = 0;
@@ -503,13 +341,10 @@ int main ()
 			for (int global = 0; global < numberOfBlock; global++)
 			{
 				list<string> slist1;
-				cout << "##############" << endl;
 				internalNode.seekg(getSeekPointer1);
 				for(int a1 = 0; a1 < perBlock; a1++)
 				{
 					getline(internalNode, line);
-					cout << line << endl;
-					cout << "CURR: " << getSeekPointer1 << " ADD 1024: " << internalNode.tellg() << endl;
 					if((internalNode.tellg()) >= getSeekPointer1 + diskSize)
 					{
 						continue;
@@ -644,7 +479,7 @@ int main ()
 				if(fInternalData != "")
 				{
 					internalNode << fInternalData << getSeekPointer1 << endl;
-					cout << fInternalData << endl;
+					//cout << fInternalData << endl;
 				}
 				localSetSeekPointer1 = internalNode.tellp();
 				getSeekPointer1 = getSeekPointer1 + diskSize;
@@ -652,7 +487,7 @@ int main ()
 				{
 					count1 = 0;
 					blockCounter++;
-					cout << "BC: " << blockCounter << endl;
+					//cout << "BC: " << blockCounter << endl;
 					setSeekPointer1 = setSeekPointer1 + diskSize;
 				}
 				else if (numberOfBlock == global-1)
@@ -663,12 +498,12 @@ int main ()
 		
 			if(count1 == 0)
 			{
-				cout << "COUNT1: " << count1 << endl;
+				//cout << "COUNT1: " << count1 << endl;
 				endPointer = setSeekPointer1;
 			}
 			else
 			{
-				cout << "COUNT2: " << count1 << endl;
+				//cout << "COUNT2: " << count1 << endl;
 				//blockCounter++;
 				//endPointer = setSeekPointer1 + diskSize;
 			}
@@ -677,17 +512,21 @@ int main ()
 			setSeekPointer1 = endPointer;
 			numberOfBlock = blockCounter;
 			
-			cout << "Number of Blocks " << numberOfBlock << endl;
+		//	cout << "Number of Blocks " << numberOfBlock << endl;
 			blockCounter = 0;
 		}
 		internalNode.seekg(9216);
 		string l1 ="";
 		getline(internalNode, l1);
-		cout << l1 << endl;
+		//cout << l1 << endl;
 		getline(internalNode, l1);
-		cout << l1 << endl;
+		//cout << l1 << endl;
 		getline(internalNode, l1);
-		cout << l1 << endl;
+		//cout << l1 << endl;
+				getline(internalNode, l1);
+		//cout << l1 << endl;
+				getline(internalNode, l1);
+	//	cout << l1 << endl;
 	}	
 	return 0;
 }
