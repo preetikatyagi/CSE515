@@ -13,7 +13,7 @@ using namespace std;
 int indexDesc = 0;
 int minmax = 0;
 int numDesc = 2;
-int diskSize = 210;
+int diskSize = 350;
 string filePath = "C:\\Preetika\\MWD\\ProjectCode\\STR\\";
 // Function to compare the L values
 bool compare_nocase1 (string first, string second)
@@ -147,6 +147,7 @@ int main ()
 	int numObjects = 0;
 	int numPPage1 = diskSize/(14*(numDesc+1));
 	int numObjPPage = numPPage1; 
+	cout << numObjPPage << endl;
 	int numDimension = numDesc;
 	int numObjPSlice;
 
@@ -513,6 +514,17 @@ int main ()
 			numberOfBlock = blockCounter;
 			blockCounter = 0;
 		}
+		internalNode.seekg(700);
+		string lin = "";
+		getline(internalNode, lin);
+		cout << lin << endl;
+		getline(internalNode, lin);
+		cout << lin << endl;
+		getline(internalNode, lin);
+		cout << lin << endl;
+		getline(internalNode, lin);
+		cout << lin << endl;
+		
 	}	
 	return 0;
 }
