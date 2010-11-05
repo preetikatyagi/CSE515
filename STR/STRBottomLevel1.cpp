@@ -10,15 +10,15 @@
 using namespace std;
 
 // Global Variables
-#define NUMDESC 5
+#define NUMDESC 2
 int indexDesc = 0;
 int minmax = 0;
-int numDesc = 5;
+int numDesc = 2;
 // comparison, not case sensitive.
 bool compare_nocase1 (string first, string second)
 {
 	int localIndex = indexDesc;
-	int temp1=0, temp2=0;
+	unsigned int temp1=0, temp2=0;
 	int position1 = 0;
 	
 	if(localIndex == 0)
@@ -32,27 +32,32 @@ bool compare_nocase1 (string first, string second)
 	}
 	else
 	{
-	position1 = 0;
-	for(int inner = 0; inner < localIndex; inner++)
-	{
-		position1 = first.find_first_of(",", position1+1);
-	}
-	int position2 = 0;
-	position2 = first.find_first_of(",",position1+1);
-	string sub1 = first.substr(position1+1, position2-position1-1);
-	istringstream buffer1(sub1);
-	buffer1 >> temp1;
-  
-	position1 = 0;
-	for(int inner = 0; inner < localIndex; inner++)
-	{
-		position1 = second.find_first_of(",",position1+1);
-	}
-	position2 = 0;
-	position2 = second.find_first_of(",",position1+1);
-	sub1 = second.substr(position1+1, position2-position1-1);
-	istringstream buffer2(sub1);
-	buffer2 >> temp2;
+		position1 = 0;
+		for(int inner = 0; inner < localIndex; inner++)
+		{
+			position1 = first.find_first_of(",", position1+1);
+		}
+		int position2 = 0;
+		position2 = first.find_first_of(",",position1+1);
+		string sub1 = first.substr(position1+1, position2-position1-1);
+		istringstream buffer1(sub1);
+		buffer1 >> temp1;
+	  
+		position1 = 0;
+		for(int inner = 0; inner < localIndex; inner++)
+		{
+			position1 = second.find_first_of(",",position1+1);
+		}
+		position2 = 0;
+		position2 = second.find_first_of(",",position1+1);
+		sub1 = second.substr(position1+1, position2-position1-1);
+		istringstream buffer2(sub1);
+		buffer2 >> temp2;
+		if(localIndex == 2)
+		{
+			//cout << "1 " << first << " " << temp1 << endl;
+			//cout << "2 " << second << " " << temp2 << endl;
+		}
 	}
 	if(temp1 < temp2) return true;
 	else return false;		
@@ -60,9 +65,9 @@ bool compare_nocase1 (string first, string second)
 bool compare_nocase2 (string first, string second)
 {
 	int localIndex = minmax + indexDesc;
-	int temp1=0, temp2=0;
+	unsigned int temp1=0, temp2=0;
 	int position1 = 0;
-	cout << indexDesc << " " << minmax << endl;
+	//cout << indexDesc << " " << minmax << endl;
 	if(localIndex == 0)
 	{
 		position1 = first.find_first_of(",");
@@ -76,33 +81,28 @@ bool compare_nocase2 (string first, string second)
 	}
 	else
 	{
-		cout << "EXPECTED: " << endl;
-	position1 = 0;
-	for(int inner = 0; inner < localIndex; inner++)
-	{
-		position1 = first.find_first_of(",", position1+1);
-	}
-	int position2 = 0;
-	position2 = first.find_first_of(",",position1+1);
-	string sub1 = first.substr(position1+1, position2-position1-1);
-	istringstream buffer1(sub1);
-	buffer1 >> temp1;
-  
-	position1 = 0;
-	for(int inner = 0; inner < localIndex; inner++)
-	{
-		position1 = second.find_first_of(",",position1+1);
-	}
-	position2 = 0;
-	position2 = second.find_first_of(",",position1+1);
-	sub1 = second.substr(position1+1, position2-position1-1);
-	istringstream buffer2(sub1);
-	buffer2 >> temp2;
-	}
-	if(localIndex != 0)
-	{
-	cout << "FIRST: " << first << " " << temp1 << endl;
-	cout << "SECOND: " << second << " " << temp2 << endl;
+		//cout << "EXPECTED: " << endl;
+		position1 = 0;
+		for(int inner = 0; inner < localIndex; inner++)
+		{
+			position1 = first.find_first_of(",", position1+1);
+		}
+		int position2 = 0;
+		position2 = first.find_first_of(",",position1+1);
+		string sub1 = first.substr(position1+1, position2-position1-1);
+		istringstream buffer1(sub1);
+		buffer1 >> temp1;
+	  
+		position1 = 0;
+		for(int inner = 0; inner < localIndex; inner++)
+		{
+			position1 = second.find_first_of(",",position1+1);
+		}
+		position2 = 0;
+		position2 = second.find_first_of(",",position1+1);
+		sub1 = second.substr(position1+1, position2-position1-1);
+		istringstream buffer2(sub1);
+		buffer2 >> temp2;
 	}
 	if(temp1 < temp2) return true;
 	else return false;		
@@ -147,18 +147,26 @@ int main ()
 	double numSlice;
 	int noSlice;
 	int numObjects = 0;
-	int diskSize = 1024;
-	int numObjPPage = 5;
+	int diskSize = 200;
+	int numPPage1 = diskSize/(11*(numDesc+1));
+	cout << numPPage1 << endl;
+	int numObjPPage = numPPage1; //5;
 	int numDimension = numDesc;
 	int numObjPSlice;
 	for(int counter = 1; counter <= numDesc; counter++)
 	{
-		//cout << "Counter: " << counter << endl;
 		while(!fNamePrev.empty())
 		{
 			string tempFName = fNamePrev.front();
 			mylist = sortObjects(tempFName, counter);
-			for (it=mylist.begin(); it!=mylist.end(); it++)
+			//cout << tempFName << endl;
+			/*if(counter == 5)
+			{
+				for (it=mylist.begin(); it!=mylist.end(); it++)
+				{
+					cout << "1:" << *it << endl;
+				}
+			}*/
 			numObjects = mylist.size();
 			numSlice = (double)numObjects/numObjPPage;
 			numSlice = pow(numSlice,(double)1/numDimension);
@@ -186,6 +194,7 @@ int main ()
 				fName.push_back(fileN.c_str());
 				string temp = "C:\\Preetika\\MWD\\ProjectCode\\STR\\";
 				fileN = temp.append(fileN);
+				//cout << "WRITE: " << fileN << endl;
 				fileN = fileN.append(".txt");
 				ofstream sliceFile((char *)fileN.c_str());
 				int j = 0;
@@ -194,6 +203,7 @@ int main ()
 					while(j < numObjPSlice && it!=mylist.end())
 					{
 						sliceFile << *it << endl;
+						//cout << *it << endl;
 						++it;
 						j++;
 					}
@@ -220,6 +230,7 @@ int main ()
 	{
 		string tempFName = "C:\\Preetika\\MWD\\ProjectCode\\STR\\";
 		tempFName = tempFName.append(*it);
+		//cout << "filename: " << tempFName << endl;
 		tempFName = tempFName.append(".txt");
 		ifstream file((char *)tempFName.c_str());
 		if(file.is_open())
@@ -230,10 +241,11 @@ int main ()
 				if(line != "")
 				{
 					finalListObjects.push_back(line);
+		//			cout << line << endl;
 				}
 			}
 			file.close();
-			remove((char *)tempFName.c_str());
+		//	remove((char *)tempFName.c_str());
 		}
 		else 
 		{
@@ -250,12 +262,14 @@ int main ()
 	int seekPointer = 0;
 	for (it=finalListObjects.begin(); it!=finalListObjects.end();)	
 	{
+		
 		count = 1;
 		if(ffile.is_open())
 		{
 			ffile.seekp(seekPointer);
 			while(count <= numObjPPage && it!=finalListObjects.end())
 			{
+				//cout << *it << endl;
 				ffile << *it << endl;
 				++it;
 				count++;
@@ -275,7 +289,7 @@ int main ()
 	int getSeekPointer = 0;
 	int setSeekPointer = 0;
 	int setSeekPointerLocal = 0;
-	int noOfInternalNodePPage = 3;
+	int noOfInternalNodePPage = numObjPPage/2; //3;
 	int localSetSeekPointer2 = 0;
 	string secondToLeaf;
 	string internalData = "";
@@ -364,7 +378,7 @@ int main ()
 			}
 			getSeekPointer = getSeekPointer + diskSize;
 			
-			if(count1 == 3)
+			if(count1 == noOfInternalNodePPage)
 			{
 				count1 = 0;
 				blockCounter++;
@@ -388,7 +402,7 @@ int main ()
 	int getSeekPointer1 = 0;
 	int setSeekPointer1 = setSeekPointer;
 	int endPointer = 0;
-	int perBlock = 3;
+	int perBlock = noOfInternalNodePPage;
 	int numberOfBlock = blockCounter;
 	
 	blockCounter = 0;
@@ -420,63 +434,64 @@ int main ()
 				// Write code for MBR
 				string internalData1 = "";
 				string internalData2 = "";
-				//int indexDesc = 0;
-				//int minmax = 0;
 				for(int inn = 0; inn < numDesc; inn++)
 				{
-				indexDesc = inn;
-				minmax = 0;
-				slist1.sort(compare_nocase2);
-				int localIndex = indexDesc + minmax;
-				int position1 = 0;
-				int position2 = 0;
-				string sub1 = "";
-				string sub2 = "";
-				if(localIndex == 0)
-				{
-					position1 = slist1.front().find_first_of(",");
-					sub1 = slist1.front().substr(0,position1-1);
-				}
-				else
-				{
-					position1 = 0;
-					for(int inner = 0; inner < localIndex; inner++)
+					indexDesc = inn;
+					minmax = 0;
+					slist1.sort(compare_nocase2);
+					int localIndex = indexDesc + minmax;
+					int position1 = 0;
+					int position2 = 0;
+					string sub1 = "";
+					string sub2 = "";
+					if(localIndex == 0)
 					{
-						position1 = slist1.front().find_first_of(",", position1+1);
+						position1 = slist1.front().find_first_of(",");
+						sub1 = slist1.front().substr(0,position1);
+						//cout << slist1.front() << " " << sub1 << endl;
 					}
-					position2 = 0;
-					position2 = slist1.front().find_first_of(",",position1+1);
-					sub1 = slist1.front().substr(position1+1, position2-position1-1);
-  				}
-				internalData1 += sub1 + ",";
-				
-				
-				indexDesc = inn;
-				minmax = numDesc;
-				slist2.sort(compare_nocase2);
-				localIndex = indexDesc + minmax;
-				position1 = 0;
-				position2 = 0;
-				sub1 = "";
-				sub2 = "";
-				if(localIndex == 0)
-				{
-					position2 = slist1.front().find_first_of(",");
-					sub2 = slist2.back().substr(0,position1-1);
-				}
-				else
-				{
-					position1 = 0;
-					for(int inner = 0; inner < localIndex; inner++)
+					else
 					{
-						position1 = slist2.back().find_first_of(",",position1+1);
-					}
+						position1 = 0;
+						for(int inner = 0; inner < localIndex; inner++)
+						{
+							position1 = slist1.front().find_first_of(",", position1+1);
+						}
+						position2 = 0;
+						position2 = slist1.front().find_first_of(",",position1+1);
+						sub1 = slist1.front().substr(position1+1, position2-position1-1);
+  					}
+					internalData1 += sub1 + ",";
+					
+					indexDesc = inn;
+					minmax = numDesc;
+					slist2.sort(compare_nocase2);
+					localIndex = indexDesc + minmax;
+					position1 = 0;
 					position2 = 0;
-					position2 = slist2.back().find_first_of(",",position1+1);
-					sub2 = slist2.back().substr(position1+1, position2-position1-1);
+					sub1 = "";
+					sub2 = "";
+					if(localIndex == 0)
+					{
+						position2 = slist1.front().find_first_of(",");
+						sub2 = slist2.back().substr(0,position1);
+					//	cout << slist1.back() << sub2 << endl;
+					}
+					else
+					{
+						position1 = 0;
+						for(int inner = 0; inner < localIndex; inner++)
+						{
+							position1 = slist2.back().find_first_of(",",position1+1);
+						}
+						position2 = 0;
+						position2 = slist2.back().find_first_of(",",position1+1);
+						sub2 = slist2.back().substr(position1+1, position2-position1-1);
+					}
+					internalData2 += sub2 + ",";
 				}
-				internalData2 += sub2 + ",";
-				}
+				//cout << "1: " << internalData1 << endl;
+				//cout << "2: " << internalData2 << endl;
 				// Write code for MBR
 				// create MBR Entry
 				
@@ -529,7 +544,7 @@ int main ()
 		//	cout << "Number of Blocks " << numberOfBlock << endl;
 			blockCounter = 0;
 		}
-		internalNode.seekg(9216);
+		internalNode.seekg(1200);
 		string l1 ="";
 		getline(internalNode, l1);
 		cout << l1 << endl;
@@ -537,10 +552,11 @@ int main ()
 		cout << l1 << endl;
 		getline(internalNode, l1);
 		cout << l1 << endl;
-				getline(internalNode, l1);
+		//getline(internalNode, l1);
 		//cout << l1 << endl;
-				getline(internalNode, l1);
-	//	cout << l1 << endl;
+		getline(internalNode, l1);
+		//cout << l1 << endl;
 	}	
+	
 	return 0;
 }
