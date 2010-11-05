@@ -10,11 +10,12 @@
 using namespace std;
 
 // Global Variables
-#define NUMDESC 2
 int indexDesc = 0;
 int minmax = 0;
 int numDesc = 2;
-// comparison, not case sensitive.
+int diskSize = 210;
+string filePath = "C:\\Preetika\\MWD\\ProjectCode\\STR\\";
+// Function to compare the L values
 bool compare_nocase1 (string first, string second)
 {
 	int localIndex = indexDesc;
@@ -53,21 +54,17 @@ bool compare_nocase1 (string first, string second)
 		sub1 = second.substr(position1+1, position2-position1-1);
 		istringstream buffer2(sub1);
 		buffer2 >> temp2;
-		if(localIndex == 2)
-		{
-			//cout << "1 " << first << " " << temp1 << endl;
-			//cout << "2 " << second << " " << temp2 << endl;
-		}
 	}
 	if(temp1 < temp2) return true;
 	else return false;		
 }
+
+// Function to compare the internal nodes of the tree
 bool compare_nocase2 (string first, string second)
 {
 	int localIndex = minmax + indexDesc;
 	unsigned int temp1=0, temp2=0;
 	int position1 = 0;
-	//cout << indexDesc << " " << minmax << endl;
 	if(localIndex == 0)
 	{
 		position1 = first.find_first_of(",");
@@ -81,7 +78,6 @@ bool compare_nocase2 (string first, string second)
 	}
 	else
 	{
-		//cout << "EXPECTED: " << endl;
 		position1 = 0;
 		for(int inner = 0; inner < localIndex; inner++)
 		{
@@ -107,12 +103,14 @@ bool compare_nocase2 (string first, string second)
 	if(temp1 < temp2) return true;
 	else return false;		
 }
+
+// Function to return sorted entries based on Lth parameter
 list<string> sortObjects(string fileName, int check)
 {
 	list<string> mylist;
 	int count = 0;
 	string line;
-	string temp = "C:\\Preetika\\MWD\\ProjectCode\\STR\\";
+	string temp = filePath;
 	fileName = temp.append(fileName);
 	fileName = fileName.append(".txt");
 	ifstream myfile((char *)fileName.c_str());
@@ -147,26 +145,18 @@ int main ()
 	double numSlice;
 	int noSlice;
 	int numObjects = 0;
-	int diskSize = 200;
-	int numPPage1 = diskSize/(11*(numDesc+1));
-	cout << numPPage1 << endl;
-	int numObjPPage = numPPage1; //5;
+	int numPPage1 = diskSize/(14*(numDesc+1));
+	int numObjPPage = numPPage1; 
 	int numDimension = numDesc;
 	int numObjPSlice;
+
+	// This part creates the data file
 	for(int counter = 1; counter <= numDesc; counter++)
 	{
 		while(!fNamePrev.empty())
 		{
 			string tempFName = fNamePrev.front();
 			mylist = sortObjects(tempFName, counter);
-			//cout << tempFName << endl;
-			/*if(counter == 5)
-			{
-				for (it=mylist.begin(); it!=mylist.end(); it++)
-				{
-					cout << "1:" << *it << endl;
-				}
-			}*/
 			numObjects = mylist.size();
 			numSlice = (double)numObjects/numObjPPage;
 			numSlice = pow(numSlice,(double)1/numDimension);
@@ -192,9 +182,8 @@ int main ()
 				fileN = "";
 				fileN = tempFName1.append(buffer.str());
 				fName.push_back(fileN.c_str());
-				string temp = "C:\\Preetika\\MWD\\ProjectCode\\STR\\";
+				string temp = filePath;
 				fileN = temp.append(fileN);
-				//cout << "WRITE: " << fileN << endl;
 				fileN = fileN.append(".txt");
 				ofstream sliceFile((char *)fileN.c_str());
 				int j = 0;
@@ -203,7 +192,6 @@ int main ()
 					while(j < numObjPSlice && it!=mylist.end())
 					{
 						sliceFile << *it << endl;
-						//cout << *it << endl;
 						++it;
 						j++;
 					}
@@ -228,9 +216,8 @@ int main ()
 	string line;
 	for (it=fNamePrev.begin(); it!=fNamePrev.end();++it)	
 	{
-		string tempFName = "C:\\Preetika\\MWD\\ProjectCode\\STR\\";
+		string tempFName = filePath;
 		tempFName = tempFName.append(*it);
-		//cout << "filename: " << tempFName << endl;
 		tempFName = tempFName.append(".txt");
 		ifstream file((char *)tempFName.c_str());
 		if(file.is_open())
@@ -241,21 +228,19 @@ int main ()
 				if(line != "")
 				{
 					finalListObjects.push_back(line);
-		//			cout << line << endl;
 				}
 			}
 			file.close();
-		//	remove((char *)tempFName.c_str());
+			remove((char *)tempFName.c_str());
 		}
 		else 
 		{
 			cout << "Unable to open file. " << tempFName << endl;
 		}		
 	}
-	//cout << "Number of objects: " << finalListObjects.size() << endl;
 	int count = 0;
 	string temp;
-	temp = "C:\\Preetika\\MWD\\ProjectCode\\STR\\";
+	temp = filePath;
 	temp = temp.append("STRLeaf.txt");
 	ofstream ffile((char *)temp.c_str());
 	int fileC = 1;
@@ -269,7 +254,6 @@ int main ()
 			ffile.seekp(seekPointer);
 			while(count <= numObjPPage && it!=finalListObjects.end())
 			{
-				//cout << *it << endl;
 				ffile << *it << endl;
 				++it;
 				count++;
@@ -282,6 +266,7 @@ int main ()
 		}
 		fileC++;
 	}
+	int height = 0;
 
 	// Now create the second internal node level to leaf level
 	int count1 = 0;
@@ -293,8 +278,10 @@ int main ()
 	int localSetSeekPointer2 = 0;
 	string secondToLeaf;
 	string internalData = "";
-	secondToLeaf = "C:\\Preetika\\MWD\\ProjectCode\\STR\\";
-	secondToLeaf = secondToLeaf.append("STRSecondToLeaf.txt");
+	string internalData3 = "";
+	string internalData4 = "";
+	secondToLeaf = filePath;
+	secondToLeaf = secondToLeaf.append("STRTree.txt");
 	
 	ofstream internalNode1((char *)secondToLeaf.c_str());
 	ifstream leafObjects((char *)temp.c_str());
@@ -303,6 +290,8 @@ int main ()
 		while(leafObjects.good())
 		{
 			internalData = "";
+			internalData3 = "";
+			internalData4 = "";
 			list<string> sList;
 			leafObjects.seekg(getSeekPointer);
 			for(int a1 = 0; a1 < numObjPPage; a1++)
@@ -330,7 +319,7 @@ int main ()
 					position2 = 0;
 					position2 = sList.front().find_first_of(",",position1+1);
 					string sub1 = sList.front().substr(position1+1, position2-position1-1);
-					internalData += sub1 + ",";
+					internalData3 += sub1 + ",";
 				}
 				position1 = 0;
 				if(!sList.empty())
@@ -342,19 +331,19 @@ int main ()
 					position2 = 0;
 					position2 = sList.back().find_first_of(",",position1+1);
 					string sub1 = sList.back().substr(position1+1, position2-position1-1);
-					internalData += sub1 + ",";
+					internalData4 += sub1 + ",";
 				}
 			}
 			indexDesc = 0;
 			// Write loop
-			
+			internalData = internalData3 + internalData4;
 			count1++;
 			if(internalData != "")
 			{
 				ostringstream strGetSeekPointer;
 				strGetSeekPointer << getSeekPointer;
+				internalData = internalData.append("-");
 				internalData = internalData.append(strGetSeekPointer.str());
-				//cout << internalData << endl;
 			}
 			
 			// write to second to leaf level file
@@ -372,7 +361,6 @@ int main ()
 				{
 					internalNode1 << internalData << endl;
 					localSetSeekPointer2 = internalNode1.tellp();
-					//cout << "JUMPOO " << count1 << " " << internalData << endl;
 				}
 
 			}
@@ -386,14 +374,14 @@ int main ()
 			}
 		}
 	}
-		if(count1 == 0)
-		{	
-		}
-		else
-		{
-			setSeekPointer = setSeekPointer + diskSize;
-			blockCounter++;	
-		}
+	if(count1 == 0)
+	{	
+	}
+	else
+	{
+		setSeekPointer = setSeekPointer + diskSize;
+		blockCounter++;	
+	}
 	count1 = 0;
 	leafObjects.close();
 	internalNode1.close();
@@ -404,9 +392,7 @@ int main ()
 	int endPointer = 0;
 	int perBlock = noOfInternalNodePPage;
 	int numberOfBlock = blockCounter;
-	
 	blockCounter = 0;
-	
 	int localSetSeekPointer1;
 	fstream internalNode((char *)secondToLeaf.c_str(), ios::in | ios::out);
 	if(internalNode.is_open())
@@ -448,7 +434,6 @@ int main ()
 					{
 						position1 = slist1.front().find_first_of(",");
 						sub1 = slist1.front().substr(0,position1);
-						//cout << slist1.front() << " " << sub1 << endl;
 					}
 					else
 					{
@@ -475,7 +460,6 @@ int main ()
 					{
 						position2 = slist1.front().find_first_of(",");
 						sub2 = slist2.back().substr(0,position1);
-					//	cout << slist1.back() << sub2 << endl;
 					}
 					else
 					{
@@ -490,9 +474,6 @@ int main ()
 					}
 					internalData2 += sub2 + ",";
 				}
-				//cout << "1: " << internalData1 << endl;
-				//cout << "2: " << internalData2 << endl;
-				// Write code for MBR
 				// create MBR Entry
 				
 				count1++;
@@ -508,7 +489,6 @@ int main ()
 				if(fInternalData != "")
 				{
 					internalNode << fInternalData << getSeekPointer1 << endl;
-					//cout << fInternalData << endl;
 				}
 				localSetSeekPointer1 = internalNode.tellp();
 				getSeekPointer1 = getSeekPointer1 + diskSize;
@@ -516,7 +496,6 @@ int main ()
 				{
 					count1 = 0;
 					blockCounter++;
-					//cout << "BC: " << blockCounter << endl;
 					setSeekPointer1 = setSeekPointer1 + diskSize;
 				}
 				else if (numberOfBlock == global-1)
@@ -524,39 +503,16 @@ int main ()
 					blockCounter++;
 				}
 			}	
-		
 			if(count1 == 0)
 			{
-				//cout << "COUNT1: " << count1 << endl;
 				endPointer = setSeekPointer1;
-			}
-			else
-			{
-				//cout << "COUNT2: " << count1 << endl;
-				//blockCounter++;
-				//endPointer = setSeekPointer1 + diskSize;
 			}
 			endPointer = setSeekPointer1;
 			startPointer = setSeekPointer;
 			setSeekPointer1 = endPointer;
 			numberOfBlock = blockCounter;
-			
-		//	cout << "Number of Blocks " << numberOfBlock << endl;
 			blockCounter = 0;
 		}
-		internalNode.seekg(1200);
-		string l1 ="";
-		getline(internalNode, l1);
-		cout << l1 << endl;
-		getline(internalNode, l1);
-		cout << l1 << endl;
-		getline(internalNode, l1);
-		cout << l1 << endl;
-		//getline(internalNode, l1);
-		//cout << l1 << endl;
-		getline(internalNode, l1);
-		//cout << l1 << endl;
 	}	
-	
 	return 0;
 }
