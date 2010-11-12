@@ -7,6 +7,7 @@
 #include <fstream>
 #include <cctype>
 #include <math.h>
+#include <iomanip>
 using namespace std;
 
 // Global Variables
@@ -21,7 +22,7 @@ bool compare_nocase1 (string first, string second)
 	int localIndex = indexDesc;
 	unsigned int temp1=0, temp2=0;
 	int position1 = 0;
-	
+
 	if(localIndex == 0)
 	{
 		string substr01 = first.substr(0,first.find_first_of(","));
@@ -43,7 +44,7 @@ bool compare_nocase1 (string first, string second)
 		string sub1 = first.substr(position1+1, position2-position1-1);
 		istringstream buffer1(sub1);
 		buffer1 >> temp1;
-	  
+
 		position1 = 0;
 		for(int inner = 0; inner < localIndex; inner++)
 		{
@@ -88,7 +89,7 @@ bool compare_nocase2 (string first, string second)
 		string sub1 = first.substr(position1+1, position2-position1-1);
 		istringstream buffer1(sub1);
 		buffer1 >> temp1;
-	  
+
 		position1 = 0;
 		for(int inner = 0; inner < localIndex; inner++)
 		{
@@ -151,7 +152,7 @@ int main ()
 	double numSlice;
 	int noSlice;
 	int numObjects = 0;
-	int numPPage1 = diskSize/((4*(numDesc+1)) + 4);
+	int numPPage1 = diskSize/(12*(numDesc+1));
 	int numObjPPage = numPPage1; 
 	cout << numObjPPage << endl;
 	int numDimension = numDesc;
@@ -189,7 +190,6 @@ int main ()
 				fileN = "";
 				fileN = tempFName1.append(buffer.str());
 				fName.push_back(fileN.c_str());
-				//cout << fileN.c_str() << endl;
 				string temp = filePath;
 				fileN = temp.append(fileN);
 				fileN = fileN.append(".txt");
@@ -231,7 +231,6 @@ int main ()
 		ifstream file((char *)tempFName.c_str());
 		if(file.is_open())
 		{
-			//cout << tempFName.c_str() << endl;
 			while(file.good())
 			{
 				getline(file, line);
@@ -245,73 +244,59 @@ int main ()
 		}
 		else 
 		{
-			//cout << "Unable to open file... " << tempFName << endl;
+			//cout << "Unable to open file. " << tempFName << endl;
 		}		
 	}
-	
+
 	// Write all the objects to data file according to the page size
 	int count = 0;
 	string temp;
 	temp = filePath;
 	temp = temp.append("STRLeaf.txt");
-	ofstream ffile((char *)temp.c_str(), ios::binary);
+	ofstream ffile((char *)temp.c_str());
 	int fileC = 1;
 	int seekPointer = 0;
-	int pageEntries = 0;
-	int checkpoint = 0;
 	for (it=finalListObjects.begin(); it!=finalListObjects.end();)	
 	{
-		
 		count = 1;
 		if(ffile.is_open())
 		{
-			pageEntries = 0;
 			ffile.seekp(seekPointer);
-			ffile.write((char*)&pageEntries, sizeof(int));
-			int done1 = 1;
-			cout << "before while" << endl;
 			while(count <= numObjPPage && it!=finalListObjects.end())
 			{
-				//ffile << *it << endl;
-				cout << "COUNT: " << count << endl;
-				done1 = 0;
-				checkpoint++;
-				pageEntries++;
+				
+				string templocal = *it;
 				int prevpos = 0;
 				int pos = 0;
-				string tempStr = *it;
-				unsigned int abc;
-				 //= (tempStr).c_str();
-				//cout << "String: " << tempStr << endl;
-				prevpos = tempStr.find_first_of(",",0);
-				int loop = 0;
-				int done = 0;
-				abc = 0;
-				ffile.write((char*)&abc, sizeof(int));
-				while(!done)
+				prevpos = templocal.find_first_of(",",0);
+				string outputstr = "";
+				unsigned int tempstri = 0;
+				//cout << templocal <<endl;
+				istringstream buffer1(templocal.substr(0, prevpos-1));
+				buffer1 >> tempstri;
+				ostringstream buffer2;
+				buffer2 << right << setw(11) << setfill('0') << tempstri;
+				outputstr += buffer2.str() + ",";
+				for(int loop = 0; loop < numDesc; loop++)
 				{
-					pos = tempStr.find_first_of(",",prevpos+1);
-					istringstream buffer1(tempStr.substr(prevpos+1, pos-prevpos-1));
-					buffer1 >> abc;
-					//cout << abc << " ";
+					pos = templocal.find_first_of(",", prevpos+1);
+					istringstream buffer1(templocal.substr(prevpos+1, pos-prevpos-1));
+					buffer1 >> tempstri;
+					ostringstream buffer2;
+					buffer2 << right << setw(11) << setfill('0') << tempstri;
+					//cout << buffer2.str() << " ";
+					outputstr += buffer2.str() + ",";
 					prevpos = pos;
-					loop++;
-					
-					ffile.write((char*)&abc, sizeof(int));
-					if(loop == numDesc)
-					{
-						done = 1;
-						break;
-					}
-				}	
+				}
+				outputstr = outputstr.substr(0,outputstr.length()-1);
+				//ffile << *it << endl;
+
+				ffile << outputstr << endl;
+				
+				//ffile << *it << endl;
 				++it;
-				count++;	
+				count++;
 			}
-			
-			ffile.seekp(seekPointer);
-			cout << seekPointer << endl;
-			ffile.write((char*)&pageEntries, sizeof(int));
-			cout << pageEntries << endl;
 			seekPointer = seekPointer + diskSize;
 		}
 		else
@@ -320,16 +305,15 @@ int main ()
 		}
 		fileC++;
 	}
-	cout << "checkpoint: " << checkpoint << endl;
 	int height = 0;
-	ffile.seekp(seekPointer);
+
 	// Now create the second internal node level to leaf level
 	int count1 = 0;
 	int blockCounter = 0;
 	int getSeekPointer = 0;
 	int setSeekPointer = 0;
 	int setSeekPointerLocal = 0;
-	int noOfInternalNodePPage = 2;//diskSize/(4*(numDesc+1)); //Since node is of double size as that of the data entry
+	int noOfInternalNodePPage = numObjPPage/2; //Since node is of double size as that of the data entry
 	int localSetSeekPointer2 = 0;
 	string secondToLeaf;
 	string internalData = "";
@@ -337,7 +321,7 @@ int main ()
 	string internalData4 = "";
 	secondToLeaf = filePath;
 	secondToLeaf = secondToLeaf.append("STRTree.txt");
-	
+
 	ofstream internalNode1((char *)secondToLeaf.c_str());
 	ifstream leafObjects((char *)temp.c_str());
 	if(leafObjects.is_open())
@@ -349,53 +333,18 @@ int main ()
 			internalData4 = "";
 			list<string> sList;
 			leafObjects.seekg(getSeekPointer);
-			unsigned int startno = 0;
-			leafObjects.read((char *)&startno, sizeof(int));
-			ostringstream buffer2;
-			buffer2 << startno;
-			cout << "START: " << buffer2.str() << endl;
-			for(int a1 = 0; a1 < startno; a1++)//for(int a1 = 0; a1 < numObjPPage; a1++)
+			for(int a1 = 0; a1 < numObjPPage; a1++)
 			{
-				//getline(leafObjects, line);
-				unsigned int abc = 0;
-				string imageid;
-				int loc = 0;
-				line = "";
-				string line1 = "";
-				while(loc < (numDesc+1))
+				getline(leafObjects, line);
+				if(line != "")
 				{
-					if(loc == 0)
-					{
-						leafObjects.read((char *)&abc, sizeof(int));
-						line1 += "0,";
-					}
-					else
-					{
-						leafObjects.read((char *)&abc, sizeof(int));
-						//cout << "abc: " << abc << endl;
-						ostringstream buffer;
-						buffer << abc;
-						line1 += buffer.str() + ",";
-					}
-					//cout << loc << endl;
-					loc++;
-					
-				}
-				//cout << endl;
-				line1 = line1.substr(0,line1.length()-1);
-				cout << line1 << endl;
-				if(line1 != "")
-				{
-					sList.push_back(line1);
+					sList.push_back(line);
 				}
 			}
-			//cout << endl;
-			cout << endl;
-			cout << "NODE SIZE: " << sList.size() << endl;
 			// Write loop
 			int position1 = 0;
 			int position2 = 0;
-			for(int inner = 1; inner <= sList.size(); inner++)//for(int inner = 1; inner <= numDimension; inner++)
+			for(int inner = 1; inner <= numDimension; inner++)
 			{
 				indexDesc = inner;
 				sList.sort(compare_nocase1);
@@ -431,11 +380,11 @@ int main ()
 			if(internalData != "")
 			{
 				ostringstream strGetSeekPointer;
-				strGetSeekPointer << getSeekPointer;
+				strGetSeekPointer << right << setw(10) << setfill('0') << getSeekPointer;
 				internalData = internalData.append("-");
 				internalData = internalData.append(strGetSeekPointer.str());
 			}
-			
+
 			// write to second to leaf level file
 			if(internalNode1.is_open())
 			{
@@ -449,45 +398,47 @@ int main ()
 				}
 				if(internalData != "")
 				{
-					//internalNode1 << internalData << endl;//ascii write
-					//Write in binary form
-					unsigned int dataminmax = 0;
-					int done = 0;
-					int pos = 0;
+					//internalNode1 << internalData << endl;
+					string templocal = internalData;
 					int prevpos = 0;
-					int loop = 0;
-					int sizenode = sList.size();
-					internalNode1.write((char *)&sizenode, sizeof(int));
-					while(loop < sizenode)
+					int pos = 0;
+					
+					string outputstr = "";
+					unsigned int tempstri = 0;
+					//cout << "TEMP: " << templocal << endl;
+					//outputstr += templocal.substr(0, prevpos-1) + ",";
+					for(int loop = 0; loop < 2*numDesc; loop++)
 					{
 						if(loop == 0)
 						{
-							pos = internalData.find_first_of(",",0);
+							pos = templocal.find_first_of(",",0);
 						}
 						else
 						{
-							pos = internalData.find_first_of(",",prevpos+1);
+							pos = templocal.find_first_of(",", prevpos+1);
 						}
-						istringstream buffer1(internalData.substr(prevpos+1, pos-prevpos-1));
-						buffer1 >> dataminmax;
-						//cout << abc << " ";
-						internalNode1.write((char *)&dataminmax, sizeof(int));
-						//cout << dataminmax << " ";
+						istringstream buffer1(templocal.substr(prevpos+1, pos-prevpos-1));
+						buffer1 >> tempstri;
+						ostringstream buffer2;
+						buffer2 << right << setw(11) << setfill('0') << tempstri;
+						outputstr += buffer2.str() + ",";
 						prevpos = pos;
-						loop++;
 					}
-					int datapointer = 0;
-					pos = internalData.find_first_of(",",prevpos+1);
-					istringstream buffer1(internalData.substr(prevpos+1, pos-prevpos-1));
-					buffer1 >> datapointer;
-					internalNode1.write((char *)&datapointer, sizeof(int));
-					//cout << datapointer << endl << endl;
+					
+					//cout << "OUT: " << outputstr << endl;
+					//outputstr = outputstr.substr(0,outputstr.length()-1);
+					pos = templocal.find_first_of(",", prevpos+1);
+					outputstr += templocal.substr(prevpos+1, pos-prevpos-1);
+					//cout << "OUT: " << outputstr << endl;
+					internalNode1 << outputstr << endl;
+
 					localSetSeekPointer2 = internalNode1.tellp();
+					//
 				}
 
 			}
 			getSeekPointer = getSeekPointer + diskSize;
-			
+
 			if(count1 == noOfInternalNodePPage)
 			{
 				count1 = 0;
@@ -517,10 +468,7 @@ int main ()
 	int numberOfBlock = blockCounter;
 	blockCounter = 0;
 	int localSetSeekPointer1;
-	int sizeNode = 0;
-
-	fstream internalNode((char *)secondToLeaf.c_str(), ios::in | ios::out | ios::binary);
-	
+	fstream internalNode((char *)secondToLeaf.c_str(), ios::in | ios::out);
 	if(internalNode.is_open())
 	{
 		while(numberOfBlock != 0)
@@ -530,53 +478,28 @@ int main ()
 				list<string> slist1;
 				list<string> slist2;
 				internalNode.seekg(getSeekPointer1);
-				/*for(int a1 = 0; a1 < perBlock; a1++)
+				for(int a1 = 0; a1 < perBlock; a1++)
 				{
-					//getline(internalNode, line);//read in ascii
-					//write code to read in binary format//////////////////////////
-									
+					getline(internalNode, line);
 					if((internalNode.tellg()) >= getSeekPointer1 + diskSize)
 					{
 						continue;
 					}
-					
 					if(line != "")
 					{
 						slist1.push_back(line);
 						slist2.push_back(line);
+						//cout << line << endl;
 					}
-				}*/
-				
-				internalNode.read((char *)&sizeNode, sizeof(int));
-				for(int a1 = 0; a1 < sizeNode; a1++)
-				{
-					unsigned int abc = 0;
-					string imageid;
-					int loc = 0;
-					line = "";
-					string line1 = "";
-					while(loc < (numDesc*2))
-					{
-						leafObjects.read((char *)&abc, sizeof(int));
-						//cout << "abc: " << abc << endl;
-						ostringstream buffer;
-						buffer << abc;
-						line1 += buffer.str() + ",";
-						//cout << loc << endl;
-						loc++;
-					}
-					if(line1 != "")
-					{
-						slist1.push_back(line1);
-						slist2.push_back(line1);
-					}
-					leafObjects.read((char *)&abc, sizeof(int));
 				}
-		
 				// Write code for MBR
 				string internalData1 = "";
 				string internalData2 = "";
-			
+				//cout << slist1.size() << endl;
+
+				//slist1.front();
+				if(slist1.size() != 0)
+				{
 				for(int inn = 0; inn < numDesc; inn++)
 				{
 					indexDesc = inn;
@@ -604,7 +527,7 @@ int main ()
 						sub1 = slist1.front().substr(position1+1, position2-position1-1);
   					}
 					internalData1 += sub1 + ",";
-					
+
 					indexDesc = inn;
 					minmax = numDesc;
 					slist2.sort(compare_nocase2);
@@ -631,10 +554,12 @@ int main ()
 					}
 					internalData2 += sub2 + ",";
 				}
+			}
 				// create MBR Entry
-		
+
 				count1++;
 				string fInternalData = internalData1 + internalData2;
+				//cout << fInternalData << endl;
 				if(count1 == 1)
 				{
 					internalNode.seekp(setSeekPointer1);
@@ -645,35 +570,41 @@ int main ()
 				}
 				if(fInternalData != "")
 				{
-					//internalNode << fInternalData << getSeekPointer1 << endl;//write in ascii
-					// Write to file in binary format////////////////////////
-					unsigned int dataminmax = 0;
-					int done = 0;
-					int pos = 0;
+					//internalNode << fInternalData << getSeekPointer1 << endl;
+					
+					string templocal = fInternalData;
 					int prevpos = 0;
-					int loop = 0;
-					//int sizenode = 0;
-					internalNode.write((char *)&sizeNode, sizeof(int));
-					while(loop < 2*numDesc)
+					int pos = 0;
+					
+					string outputstr = "";
+					unsigned int tempstri = 0;
+					//cout << "TEMP: " << templocal << endl;
+					//outputstr += templocal.substr(0, prevpos-1) + ",";
+					for(int loop = 0; loop < 2*numDesc; loop++)
 					{
 						if(loop == 0)
 						{
-							pos = fInternalData.find_first_of(",",0);
+							pos = templocal.find_first_of(",",0);
 						}
 						else
 						{
-							pos = fInternalData.find_first_of(",",prevpos+1);
+							pos = templocal.find_first_of(",", prevpos+1);
 						}
-						istringstream buffer1(fInternalData.substr(prevpos+1, pos-prevpos-1));
-						buffer1 >> dataminmax;
-						//cout << abc << " ";
-						internalNode.write((char *)&dataminmax, sizeof(int));
-						//cout << dataminmax << " ";
+						istringstream buffer1(templocal.substr(prevpos+1, pos-prevpos-1));
+						buffer1 >> tempstri;
+						ostringstream buffer2;
+						buffer2 << right << setw(11) << setfill('0') << tempstri;
+						outputstr += buffer2.str() + ",";
 						prevpos = pos;
-						loop++;
 					}
-					internalNode.write((char *)&getSeekPointer1,sizeof(int));
-
+					//cout << "OUT: " << outputstr << endl;
+					//outputstr = outputstr.substr(0,outputstr.length()-1);
+					//pos = templocal.find_first_of(",", prevpos+1);
+					//outputstr += getSeekPointer1;
+					//cout << "OUT: " << outputstr << endl;
+					ostringstream buffer3;
+					buffer3 << right << setw(11) << setfill('0') << getSeekPointer1;
+					internalNode << outputstr << buffer3.str() << endl;		
 				}
 				localSetSeekPointer1 = internalNode.tellp();
 				getSeekPointer1 = getSeekPointer1 + diskSize;
@@ -699,7 +630,6 @@ int main ()
 			blockCounter = 0;
 		}
 	}	
-	
 	internalNode.flush();
 	internalNode.close();
 
