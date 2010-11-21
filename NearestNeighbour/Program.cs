@@ -212,7 +212,7 @@ namespace NearestNeighbor
         static string queryfile = @"C:\Preetika\MWD\ProjectCode\shape_k8_l5\query.txt";
         static string outputfile = @"C:\Preetika\MWD\ProjectCode\shape_k8_l5\results.txt";
         static List<int> pointers = new List<int>();
-        static List<double> returnQueue = new List<double>(); // Added by Preetika Tyagi
+        static SortedDictionary<double,int> returnQueue = new SortedDictionary<double,int>(); // Added by Preetika Tyagi
 
         static int findTheRootOffset(FileStream fs)
         {
@@ -229,7 +229,7 @@ namespace NearestNeighbor
             return offsetFromEnd;
         }
 
-        public static List<double> callMe()
+        public static SortedDictionary<double,int> callMe()
         {
             returnQueue.Clear(); // Added by Preetika Tyagi
            
@@ -347,7 +347,6 @@ namespace NearestNeighbor
             // Step f. Cleanup
             fs.Close();
             fl.Close();
-            returnQueue.Sort(); // Added by Preetika Tyagi
             return returnQueue; // Added by Preetika Tyagi
         }
    
@@ -356,18 +355,11 @@ namespace NearestNeighbor
             foreach (var node in page.rectangles)
             {
                 // Added by Preetika Tyagi: begins
-                if (node.MinDistance(query) <= best[numNeighbors - 1].distance)
+                if (node.MinDistance(query) > best[numNeighbors - 1].distance)
                 {
-                    if (!returnQueue.Contains(best[numNeighbors - 1].distance))
+                    if (!returnQueue.ContainsKey(node.MinDistance(query)))
                     {
-                        returnQueue.Add(best[numNeighbors - 1].distance);
-                    }
-                }
-                else
-                {
-                    if (!returnQueue.Contains(node.MinDistance(query)))
-                    {
-                        returnQueue.Add(node.MinDistance(query));
+                        returnQueue.Add(node.MinDistance(query),node.pointer);
                     }
                 }
                 // Added by Preetika Tyagi: ends
@@ -433,8 +425,12 @@ namespace NearestNeighbor
             MBR.weightFactor.Add(3);
             MBR.weightFactor.Add(4);
             MBR.weightFactor.Add(5);
-            List<double> retQ = Program1.callMe();
-            Console.WriteLine(retQ[0]);
+            SortedDictionary<double,int> retQ = Program1.callMe();
+            foreach (KeyValuePair<double, int> p in retQ)
+            {
+                Console.WriteLine("{0} = {1}",p.Key,p.Value);
+            }
+            //Console.WriteLine(retQ[0]);
         }
     }
 }
