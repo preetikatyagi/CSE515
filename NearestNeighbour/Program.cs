@@ -200,6 +200,26 @@ namespace NearestNeighbor
         }
     }
 
+    // Added by Preetika Tyagi - begins
+    class PrunedEntry : IComparable<PrunedEntry>, IEquatable<PrunedEntry>
+    {
+        public double pruneDistance;
+        public int nodePointer;
+
+        public int CompareTo(PrunedEntry other)
+        {
+            if (this.pruneDistance > other.pruneDistance) return 1;
+            if (this.pruneDistance == other.pruneDistance) return 0;
+            return -1;
+        }
+
+        public bool Equals(PrunedEntry other)
+        {
+            return this.pruneDistance == other.pruneDistance && this.nodePointer == other.nodePointer;
+        }
+    }
+    // Added by Preetika Tyagi - ends
+
     class Program1
     {
         static string folder = @"C:\Preetika\MWD\ProjectCode\shape_k8_l5\";
@@ -212,7 +232,7 @@ namespace NearestNeighbor
         static string queryfile = @"C:\Preetika\MWD\ProjectCode\shape_k8_l5\query.txt";
         static string outputfile = @"C:\Preetika\MWD\ProjectCode\shape_k8_l5\results.txt";
         static List<int> pointers = new List<int>();
-        static SortedDictionary<double,int> returnQueue = new SortedDictionary<double,int>(); // Added by Preetika Tyagi
+        static List<PrunedEntry> returnQueue = new List<PrunedEntry>(); // Added by Preetika Tyagi
 
         static int findTheRootOffset(FileStream fs)
         {
@@ -229,7 +249,7 @@ namespace NearestNeighbor
             return offsetFromEnd;
         }
 
-        public static SortedDictionary<double,int> callMe()
+        public static List<PrunedEntry> callMe()
         {
             returnQueue.Clear(); // Added by Preetika Tyagi
            
@@ -347,6 +367,7 @@ namespace NearestNeighbor
             // Step f. Cleanup
             fs.Close();
             fl.Close();
+            returnQueue.Sort(); // Added by Preetika Tyagi
             return returnQueue; // Added by Preetika Tyagi
         }
    
@@ -357,9 +378,10 @@ namespace NearestNeighbor
                 // Added by Preetika Tyagi: begins
                 if (node.MinDistance(query) > best[numNeighbors - 1].distance)
                 {
-                    if (!returnQueue.ContainsKey(node.MinDistance(query)))
+                    PrunedEntry objEntry = new PrunedEntry() { pruneDistance = node.MinDistance(query) , nodePointer = node.pointer};
+                    if(!returnQueue.Contains(objEntry))
                     {
-                        returnQueue.Add(node.MinDistance(query),node.pointer);
+                        returnQueue.Add(objEntry);
                     }
                 }
                 // Added by Preetika Tyagi: ends
@@ -425,12 +447,11 @@ namespace NearestNeighbor
             MBR.weightFactor.Add(3);
             MBR.weightFactor.Add(4);
             MBR.weightFactor.Add(5);
-            SortedDictionary<double,int> retQ = Program1.callMe();
-            foreach (KeyValuePair<double, int> p in retQ)
+            List<PrunedEntry> retQ = Program1.callMe();
+            foreach (PrunedEntry p in retQ)
             {
-                Console.WriteLine("{0} = {1}",p.Key,p.Value);
+                Console.WriteLine("{0} = {1}", p.pruneDistance, p.nodePointer);
             }
-            //Console.WriteLine(retQ[0]);
         }
     }
 }
